@@ -5,49 +5,53 @@ import {
   useAudioRecorder,
   AudioModule,
   RecordingPresets,
-  useAudioRecorderState
+  setAudioModeAsync,
+  useAudioRecorderState,
 } from 'expo-audio';
-import { CameraView } from 'expo-camera'
 
 export default function App() {
-    // useAudiorecorder hookki asettaa mikin tilan, ja käynnistää db-mittarin
     const audioRecorder = useAudioRecorder({...RecordingPresets.HIGH_QUALITY,
-      isMeteringEnabled: true  
-    });
-    // useAudioRecorderState hookki hakee mikin tilan
-    const recorderState = useAudioRecorderState(audioRecorder, 50);
-    const gating = -15; // dB
-
-    // record-funktio käynnistää äänityksen
+      isMeteringEnabled: true,});
+    const recorderState = useAudioRecorderState(audioRecorder);
+    const gating = -20; // dB
+   
+    
+  
     const record = async () => {
       await audioRecorder.prepareToRecordAsync();
       audioRecorder.record();
-      console.log(recorderState); //REAGOI LIIAN hitaasti. Await syynä? Tutki.
+      console.log(recorderState);
     };
   
-    // stopRecording-funktio pysäyttää äänityksen
     const stopRecording = async () => {
+      // The recording will be available on `audioRecorder.uri`.
       await audioRecorder.stop();
     };
   
-    // useEffect pyytää käyttöoikeudet mikkiin ja asettaa äänitilan
     useEffect(() => {
       (async () => {
         const status = await AudioModule.requestRecordingPermissionsAsync();
-        
         if (!status.granted) {
           Alert.alert('Permission to access microphone was denied');
         }
+  
+        setAudioModeAsync({
+          playsInSilentMode: true,
+          allowsRecording: true,
+        });
       })();
     }, []);
 
-    // TÄHÄN TULEE näytön backroundin värityksen vaihto biitin mukaan?
-    const backroundC = '#FFF'
-    const hexArray = [
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-      'A', 'B', 'C', 'D', 'E', 'F'
-    ];
-    // Ja tähän se loppuu
+
+    
+
+    //useEffect(() => {
+    //  const interval = setInterval(() => {
+    //    console.log('Metering:', recorderState.metering);
+    //  }, 100); // Poll every 100ms (adjust as needed)
+    //
+    //  return () => clearInterval(interval); // Cleanup on unmount
+    //}, [recorderState]);
 
 
   return (
@@ -58,9 +62,11 @@ export default function App() {
       <Text>-------</Text>
       <Text> {recorderState.metering} </Text>
       {recorderState.metering !== undefined && recorderState.metering > gating ? <Text>★</Text> : null}
-      <CameraView enableTorch={recorderState.metering !== undefined && recorderState.metering > gating ? true : false} />
+
+
+      <Text> </Text>
+      <StatusBar style="auto" />
       
-      <StatusBar style="auto" />      
     </View>
   );
 }
@@ -70,7 +76,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center', 
+    borderTopWidth: 50,
+    marginBottom: 50,
+    marginTop: 50
    
 
     
