@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, Alert } from 'react-native';
-import { use, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
   useAudioRecorder,
   AudioModule,
@@ -10,6 +10,8 @@ import {
 import { CameraView } from 'expo-camera'
 
 export default function App() {
+
+    const [BackroundC, setBackgroundC] = useState<string>('#fff');
     // useAudiorecorder hookki asettaa mikin tilan, ja käynnistää db-mittarin
     const audioRecorder = useAudioRecorder({...RecordingPresets.HIGH_QUALITY,
       isMeteringEnabled: true  
@@ -41,17 +43,28 @@ export default function App() {
       })();
     }, []);
 
-    // TÄHÄN TULEE näytön backroundin värityksen vaihto biitin mukaan?
-    const backroundC = '#FFF'
-    const hexArray = [
-      '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-      'A', 'B', 'C', 'D', 'E', 'F'
-    ];
-    // Ja tähän se loppuu
+    // kännykän näytön backroundin värityksen vaihto biitin mukaan
+    const BackgroundColor = () => {
+      const hexArray = [
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+        'a', 'b', 'c', 'd', 'e', 'f'
+      ];
+      const a = Math.floor(Math.random() * 16);
+      const b = Math.floor(Math.random() * 16);
+      const color = '#' + 'f' + hexArray[a] + hexArray[b];
+      return setBackgroundC(color);
+    };
+    useEffect(() => {
+      if (recorderState.metering !== undefined && recorderState.metering > gating) {
+        BackgroundColor();
+      }
+    }, [recorderState.metering]);
+
+  
 
 
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container, backgroundColor: BackroundC}}>
       <Text>Open up App.tsx to start working on your app!</Text>
       <Button title={recorderState.isRecording ? 'Stop Recording' : 'Start Recording'}
         onPress={recorderState.isRecording ? stopRecording : record} />
@@ -68,7 +81,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+
     alignItems: 'center',
     justifyContent: 'center', 
    
