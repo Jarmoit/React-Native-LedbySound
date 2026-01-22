@@ -47,7 +47,7 @@ export default function App() {
 
 
     // kännykän näytön backroundin värityksen vaihto biitin mukaan
-    const BackgroundColor = () => {
+    const BackgroundColorer = () => {
       const hexArray = [
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
         'a', 'b', 'c', 'd', 'e', 'f'
@@ -55,11 +55,11 @@ export default function App() {
       const a = Math.floor(Math.random() * 16);
       const b = Math.floor(Math.random() * 16);
       const color = '#' + 'f' + hexArray[a] + hexArray[b];
-      return setBackgroundC(color);
+      setBackgroundC(color);
     };
     useEffect(() => {
       if (recorderState.metering !== undefined && recorderState.metering > gating) {
-        BackgroundColor();
+        BackgroundColorer();
       }
     }, [recorderState.metering]);
 
@@ -72,7 +72,7 @@ export default function App() {
         onPress={recorderState.isRecording ? stopRecording : record} />
       <Text>-------</Text>
       <Text> {recorderState.metering} </Text>
-      {/* Näyttää tähtiä metering-arvon mukaan. Magic numbers. Out of scope jne.... */}
+      {/* Näyttää tähtiä metering-arvon mukaan. Out of scope jne.... */}
       {recorderState.metering !== undefined && recorderState.metering > gating - 15 ? <Text>★</Text> : null}
       {recorderState.metering !== undefined && recorderState.metering > gating ? <Text>★</Text> : null}
       {recorderState.metering !== undefined && recorderState.metering > gating + 12 ?  <Text>★</Text> : null}
