@@ -10,21 +10,22 @@ import {
 import { CameraView } from 'expo-camera'
 
 export default function App() {
-
     const [BackroundC, setBackgroundC] = useState<string>('#fff');
+    
     // useAudiorecorder hookki asettaa mikin tilan, ja käynnistää db-mittarin
     const audioRecorder = useAudioRecorder({...RecordingPresets.HIGH_QUALITY,
       isMeteringEnabled: true  
     });
     // useAudioRecorderState hookki hakee mikin tilan
     const recorderState = useAudioRecorderState(audioRecorder, 50);
+    //gatingin voisi määritellä sliderilla, mutta out of scope tälle projektille
     const gating = -15; // dB
 
     // record-funktio käynnistää äänityksen
     const record = async () => {
       await audioRecorder.prepareToRecordAsync();
       audioRecorder.record();
-      console.log(recorderState); //REAGOI LIIAN hitaasti. Await syynä? Tutki.
+      console.log(recorderState); //REAGOI LIIAN hitaasti. Await syynä? 
     };
   
     // stopRecording-funktio pysäyttää äänityksen
@@ -32,6 +33,7 @@ export default function App() {
       await audioRecorder.stop();
     };
   
+
     // useEffect pyytää käyttöoikeudet mikkiin ja asettaa äänitilan
     useEffect(() => {
       (async () => {
@@ -42,6 +44,7 @@ export default function App() {
         }
       })();
     }, []);
+
 
     // kännykän näytön backroundin värityksen vaihto biitin mukaan
     const BackgroundColor = () => {
@@ -61,19 +64,23 @@ export default function App() {
     }, [recorderState.metering]);
 
   
-
-
   return (
-    <View style={{...styles.container, backgroundColor: BackroundC}}>
+    <View style ={{backgroundColor: BackroundC, flex: 1}}>
+    <View style={styles.container}>
       <Text>Open up App.tsx to start working on your app!</Text>
       <Button title={recorderState.isRecording ? 'Stop Recording' : 'Start Recording'}
         onPress={recorderState.isRecording ? stopRecording : record} />
       <Text>-------</Text>
       <Text> {recorderState.metering} </Text>
+      {/* Näyttää tähtiä metering-arvon mukaan. Magic numbers. Out of scope jne.... */}
+      {recorderState.metering !== undefined && recorderState.metering > gating - 15 ? <Text>★</Text> : null}
       {recorderState.metering !== undefined && recorderState.metering > gating ? <Text>★</Text> : null}
+      {recorderState.metering !== undefined && recorderState.metering > gating + 12 ?  <Text>★</Text> : null}
+      
       <CameraView enableTorch={recorderState.metering !== undefined && recorderState.metering > gating ? true : false} />
       
       <StatusBar style="auto" />      
+    </View>
     </View>
   );
 }
@@ -81,12 +88,8 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
-    alignItems: 'center',
-    justifyContent: 'center', 
-   
-
-    
+    marginTop: 150,    
+    alignItems: 'center'   
   },
 });
 
