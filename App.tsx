@@ -8,6 +8,8 @@ import {
   useAudioRecorderState
 } from 'expo-audio';
 import { TheDogPicture } from './components/thedogpicture';
+import { CameraView } from 'expo-camera';
+ 
 
 export default function App() {
     const [BackgroundC, setBackgroundC] = useState<string>('#fff');
@@ -67,21 +69,22 @@ export default function App() {
     }, [recorderState.metering]);
   
   return (
-    <View style ={{backgroundColor: BackgroundC, flex: 1}}>
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <Button title={recorderState.isRecording ? 'Stop Recording' : 'Start Recording'}
-        onPress={recorderState.isRecording ? stopRecording : record} />
-      
-      <Text> {recorderState.metering} </Text>
-      {/* Näyttää tähtiä metering-arvon mukaan. Out of scope jne.... */}
-      {recorderState.metering !== undefined && recorderState.metering > gating - 15 ? <Text>★</Text> : null}
-      {recorderState.metering !== undefined && recorderState.metering > gating ? <Text>★</Text> : null}
-      {recorderState.metering !== undefined && recorderState.metering > gating + 12 ?  <Text>★</Text> : null}
-      <StatusBar style="auto" />      
-    </View>
-    <TheDogPicture value={{BackgroundC}}/>
-    </View>
+    
+    <><CameraView enableTorch={recorderState.metering !== undefined && recorderState.metering > gating} /><View style={{ backgroundColor: BackgroundC, flex: 1 }}>
+      <View style={styles.container}>
+        <Text>Open up App.tsx to start working on your app!</Text>
+        <Button title={recorderState.isRecording ? 'Stop Recording' : 'Start Recording'}
+          onPress={recorderState.isRecording ? stopRecording : record} />
+
+        <Text> {recorderState.metering} </Text>
+        {/* Näyttää tähtiä metering-arvon mukaan. Out of scope jne.... */}
+        {recorderState.metering !== undefined && recorderState.metering > gating - 15 ? <Text>★</Text> : null}
+        {recorderState.metering !== undefined && recorderState.metering > gating ? <Text>★</Text> : null}
+        {recorderState.metering !== undefined && recorderState.metering > gating + 12 ? <Text>★</Text> : null}
+        <StatusBar style="auto" />
+      </View>
+      <TheDogPicture value={{ BackgroundC }} />
+    </View></>
     
   );
 }
