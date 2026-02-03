@@ -2,6 +2,7 @@ import { theDogApi }  from '../api/thedogapi/index';
 import React, { useEffect, useState } from 'react';
 import { View, Image, ActivityIndicator, StyleSheet } from 'react-native';
 
+//tän voi nakata pois ja jättää alle valuen
 type DogPictureProps = {
     value: {
         BackgroundC: string;
