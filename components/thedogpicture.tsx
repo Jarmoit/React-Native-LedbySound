@@ -2,20 +2,11 @@ import { theDogApi }  from '../api/thedogapi/index';
 import React, { useEffect, useState } from 'react';
 import { View, Image, ActivityIndicator, StyleSheet } from 'react-native';
 
-//tän voi nakata pois ja value kanssa pois
-type DogPictureProps = {
-    value: {
-        BackgroundC: string;
-    }
-}
 
-export const TheDogPicture: React.FC<DogPictureProps> = ({ value }) => {
+export const TheDogPicture: React.FC = () => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const randomizer = Number(value.BackgroundC.replace('#','0x'));
   
-  console.log('TheDogPicture received BackroundC:', randomizer);
- 
     useEffect(() => {
     const fetchDogImage = async () => {
         
@@ -23,6 +14,7 @@ export const TheDogPicture: React.FC<DogPictureProps> = ({ value }) => {
         const response = await theDogApi.get('/images/search');
         if (response.data && response.data.length > 0) {
           setImageUrl(response.data[0].url);
+          
         }
         } catch (error) {
         console.error('Error fetching dog image:', error);
