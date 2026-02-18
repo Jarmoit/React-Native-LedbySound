@@ -28,7 +28,7 @@ export default function App() {
     const record = async () => {
       await audioRecorder.prepareToRecordAsync();
       audioRecorder.record();
-      console.log(recorderState); //REAGOI LIIAN hitaasti. Await syynä? 
+      
     };
   
     // stopRecording-funktio pysäyttää äänityksen
@@ -83,7 +83,7 @@ export default function App() {
         {recorderState.metering !== undefined && recorderState.metering > gating + 12 ? <Text>★</Text> : null}
         <StatusBar style="auto" />
       </View>
-      <TheDogPicture value={{ BackgroundC }} />
+      <TheDogPicture/>
     </View></>
     
   );
